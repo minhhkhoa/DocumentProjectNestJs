@@ -314,7 +314,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { HttpException, HttpStatus, Injectable } from &#x27;@nestjs/common&#x27;;
 import {
   MulterModuleOptions,
   MulterOptionsFactory,
@@ -356,13 +356,11 @@ export class MulterConfigService implements MulterOptionsFactory {
   createMulterOptions(): MulterModuleOptions {
     return {
       storage: diskStorage({
-        //- cấu hình nơi lưu trữ file upload
         destination: (req, file, cb) &#x3D;&gt; {
           const folder &#x3D; req?.headers?.folder_type ?? &#x27;default&#x27;;
           this.ensureExists(&#x60;public/images/${folder}&#x60;);
           cb(null, join(this.getRootPath(), &#x60;public/images/${folder}&#x60;));
         },
-        //- đổi tên file upload kèm theo vị trí lưu trữ + thời gian upload
         filename: (req, file, cb) &#x3D;&gt; {
           //get image extension
           let extName &#x3D; path.extname(file.originalname);
@@ -374,6 +372,35 @@ export class MulterConfigService implements MulterOptionsFactory {
           cb(null, finalName);
         },
       }),
+      fileFilter: (req, file, cb) &#x3D;&gt; {
+        const allowedFileTypes &#x3D; [
+          &#x27;jpg&#x27;,
+          &#x27;jpeg&#x27;,
+          &#x27;png&#x27;,
+          &#x27;gif&#x27;,
+          &#x27;pdf&#x27;,
+          &#x27;doc&#x27;,
+          &#x27;docx&#x27;,
+        ];
+        const fileExtension &#x3D; file.originalname
+          .split(&#x27;.&#x27;)
+          .pop()
+          ?.toLowerCase() as string;
+        const isValidFileType &#x3D; allowedFileTypes.includes(fileExtension);
+
+        if (!isValidFileType) {
+          cb(
+            new HttpException(
+              &#x27;Invalid file type&#x27;,
+              HttpStatus.UNPROCESSABLE_ENTITY,
+            ),
+            false,
+          );
+        } else cb(null, true);
+      },
+      limits: {
+        fileSize: 1024 * 1024 * 2, // 2MB
+      },
     };
   }
 }

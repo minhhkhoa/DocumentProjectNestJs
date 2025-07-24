@@ -95,7 +95,7 @@
 
 <ol class="breadcrumb">
   <li class="breadcrumb-item">Classes</li>
-  <li class="breadcrumb-item" >UpdateUserDto</li>
+  <li class="breadcrumb-item" >HttpExceptionFilter</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -119,26 +119,135 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/users/dto/update-user.dto.ts</code>
+            <code>src/core/http-exception.filter.ts</code>
         </p>
 
 
 
+
             <p class="comment">
-                <h3>Extends</h3>
+                <h3>Implements</h3>
             </p>
             <p class="comment">
-                        <code>OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const)</code>
+                        <code>ExceptionFilter</code>
             </p>
 
 
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#catch" >catch</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
 
 
 
 
 
+        </tbody>
+    </table>
+</section>
+
+
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="catch"></a>
+                    <span class="name">
+                        <span ><b>catch</b></span>
+                        <a href="#catch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>catch(exception: HttpException, host: ArgumentsHost)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="11"
+                                    class="link-to-prism">src/core/http-exception.filter.ts:11</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>exception</td>
+                                            <td>
+                                                        <code>HttpException</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>host</td>
+                                            <td>
+                                                        <code>ArgumentsHost</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
 
 
 
@@ -148,19 +257,30 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { OmitType } from &#x27;@nestjs/swagger&#x27;;
-import { CreateUserDto } from &#x27;./create-user.dto&#x27;;
-import { IsNotEmpty } from &#x27;class-validator&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from &#x27;@nestjs/common&#x27;;
+import { Response } from &#x27;express&#x27;;
 
-export class UpdateUserDto extends OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const) {
-  // @IsNotEmpty({ message: &#x27;Id không được để trống&#x27; })
-  // _id: string;
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx &#x3D; host.switchToHttp();
+    const response &#x3D; ctx.getResponse&lt;Response&gt;();
+    const status &#x3D; exception.getStatus();
+
+    //- custom response filter
+    response.status(status).json({
+      error: exception.message,
+      statusCode: status,
+      message:
+        &#x27;Dung lượng file vượt quá cho phép hoặc file không đúng định dạng&#x27;,
+    });
+  }
 }
-//- omit sẽ giúp chúng ta loại bỏ các trường không cần thiết trong DTO
-//- ở đây chúng ta loại bỏ trường password trong DTO UpdateUserDto
-//- chúng ta sẽ không cần nhập trường password khi update thông tin user
 </code></pre>
     </div>
 </div>
@@ -199,7 +319,7 @@ export class UpdateUserDto extends OmitType(CreateUserDto, [
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'UpdateUserDto.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'HttpExceptionFilter.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

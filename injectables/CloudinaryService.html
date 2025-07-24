@@ -79,7 +79,7 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content class">
+               <div class="content injectable">
                    <div class="content-data">
 
 
@@ -89,13 +89,9 @@
 
 
 
-
-
-
-
 <ol class="breadcrumb">
-  <li class="breadcrumb-item">Classes</li>
-  <li class="breadcrumb-item" >UpdateUserDto</li>
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >CloudinaryService</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -119,51 +115,152 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/users/dto/update-user.dto.ts</code>
+            <code>src/cloudinary/cloudinary.service.ts</code>
         </p>
 
 
 
-            <p class="comment">
-                <h3>Extends</h3>
-            </p>
-            <p class="comment">
-                        <code>OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const)</code>
-            </p>
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#uploadFile" >uploadFile</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
 
 
 
 
 
+        </tbody>
+    </table>
+</section>
 
 
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="uploadFile"></a>
+                    <span class="name">
+                        <span ><b>uploadFile</b></span>
+                        <a href="#uploadFile"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>uploadFile(file: <a href="../classes/File.html" target="_self">Express.Multer.File</a>)</code>
+                </td>
+            </tr>
 
 
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="8"
+                                    class="link-to-prism">src/cloudinary/cloudinary.service.ts:8</a></div>
+                        </td>
+                    </tr>
 
 
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>file</td>
+                                            <td>
+                                                            <code><a href="../classes/File.html" target="_self" >Express.Multer.File</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/Response.html" target="_self" >Promise&lt;CloudinaryResponse&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
 
     </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { OmitType } from &#x27;@nestjs/swagger&#x27;;
-import { CreateUserDto } from &#x27;./create-user.dto&#x27;;
-import { IsNotEmpty } from &#x27;class-validator&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
+import { v2 as cloudinary } from &#x27;cloudinary&#x27;;
+import { CloudinaryResponse } from &#x27;./cloudinary/cloudinary-response&#x27;;
+import streamifier from &#x27;streamifier&#x27;;
 
-export class UpdateUserDto extends OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const) {
-  // @IsNotEmpty({ message: &#x27;Id không được để trống&#x27; })
-  // _id: string;
+@Injectable()
+export class CloudinaryService {
+  uploadFile(file: Express.Multer.File): Promise&lt;CloudinaryResponse&gt; {
+    return new Promise&lt;CloudinaryResponse&gt;((resolve, reject) &#x3D;&gt; {
+      const uploadStream &#x3D; cloudinary.uploader.upload_stream(
+        (error, result) &#x3D;&gt; {
+          if (error) return reject(error);
+          if (result) {
+            resolve(result as CloudinaryResponse);
+          } else {
+            reject(new Error(&#x27;Upload failed with no result&#x27;));
+          }
+        },
+      );
+
+      streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    });
+  }
 }
-//- omit sẽ giúp chúng ta loại bỏ các trường không cần thiết trong DTO
-//- ở đây chúng ta loại bỏ trường password trong DTO UpdateUserDto
-//- chúng ta sẽ không cần nhập trường password khi update thông tin user
 </code></pre>
     </div>
+
 </div>
+
+
+
+
 
 
 
@@ -198,8 +295,8 @@ export class UpdateUserDto extends OmitType(CreateUserDto, [
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'UpdateUserDto.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'CloudinaryService.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

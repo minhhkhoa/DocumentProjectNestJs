@@ -481,8 +481,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="56"
-                                    class="link-to-prism">src/users/users.controller.ts:56</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="59"
+                                    class="link-to-prism">src/users/users.controller.ts:59</a></div>
                         </td>
                     </tr>
 
@@ -556,7 +556,7 @@
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>update(updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>, user: <a href="../interfaces/IUser.html" target="_self">IUser</a>)</code>
+                    <code>update(updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>, user: <a href="../interfaces/IUser.html" target="_self">IUser</a>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
@@ -564,14 +564,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch()<br />@ResponseMessage(&#x27;Update a User&#x27;)<br /></code>
+                    <code>@Patch(&#x27;:id&#x27;)<br />@ResponseMessage(&#x27;Update a User&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="50"
-                                    class="link-to-prism">src/users/users.controller.ts:50</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="49"
+                                    class="link-to-prism">src/users/users.controller.ts:49</a></div>
                         </td>
                     </tr>
 
@@ -607,6 +607,18 @@
                                                 <td>user</td>
                                             <td>
                                                             <code><a href="../interfaces/IUser.html" target="_self" >IUser</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
 
                                             <td>
@@ -679,11 +691,14 @@ export class UsersController {
     return this.usersService.findUser(id);
   }
 
-  //- cho hết vào body kể cả id
-  @Patch()
+  @Patch(&#x27;:id&#x27;)
   @ResponseMessage(&#x27;Update a User&#x27;)
-  update(@Body() updateUserDto: UpdateUserDto, @userDecorator() user: IUser) {
-    return this.usersService.update(updateUserDto, user);
+  update(
+    @Body() updateUserDto: UpdateUserDto,
+    @userDecorator() user: IUser,
+    @Param(&#x27;id&#x27;) id: string,
+  ) {
+    return this.usersService.update(updateUserDto, user, id);
   }
 
   @Delete(&#x27;/:id&#x27;)

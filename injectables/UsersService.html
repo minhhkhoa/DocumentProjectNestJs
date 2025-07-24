@@ -802,7 +802,7 @@
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>update(updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>, user: <a href="../interfaces/IUser.html" target="_self">IUser</a>)</code>
+                    <code>update(updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>, user: <a href="../interfaces/IUser.html" target="_self">IUser</a>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
@@ -846,6 +846,18 @@
                                                 <td>user</td>
                                             <td>
                                                             <code><a href="../interfaces/IUser.html" target="_self" >IUser</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
 
                                             <td>
@@ -1045,22 +1057,22 @@ export class UsersService {
       .populate({ path: &#x27;role&#x27;, select: { name: 1 } });
   }
 
-  async update(updateUserDto: UpdateUserDto, user: IUser) {
-    if (!mongoose.Types.ObjectId.isValid(updateUserDto._id)) {
+  async update(updateUserDto: UpdateUserDto, user: IUser, id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestCustom(
         &#x27;Id người dùng không hợp lệ!&#x27;,
-        !!updateUserDto._id,
+        !!id,
       );
     }
     try {
-      const checkUser &#x3D; await this.userModel.findById(updateUserDto._id);
+      const checkUser &#x3D; await this.userModel.findById(id);
       if (!checkUser) {
         throw new BadRequestCustom(&#x27;Không tìm thấy người dùng!&#x27;);
       }
 
       const filterEmail &#x3D; {
         email: updateUserDto.email,
-        _id: { $ne: updateUserDto._id }, //- trừ đứa đang cần update ra(ne---&gt;not equal)
+        _id: { $ne: id }, //- trừ đứa đang cần update ra(ne---&gt;not equal)
       };
       const checkEmail &#x3D; await this.userModel.findOne(filterEmail);
       if (checkEmail) {
@@ -1079,7 +1091,7 @@ export class UsersService {
             email: user.email,
           };
 
-      const filter &#x3D; { _id: updateUserDto._id, isDeleted: false };
+      const filter &#x3D; { _id: id, isDeleted: false };
       const update &#x3D; {
         $set: {
           ...updateUserDto,

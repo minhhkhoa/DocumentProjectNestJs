@@ -79,23 +79,16 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content class">
+               <div class="content controller">
                    <div class="content-data">
 
 
 
 
 
-
-
-
-
-
-
-
 <ol class="breadcrumb">
-  <li class="breadcrumb-item">Classes</li>
-  <li class="breadcrumb-item" >UpdateUserDto</li>
+  <li class="breadcrumb-item">Controllers</li>
+  <li class="breadcrumb-item" >CloudinaryController</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -119,18 +112,14 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/users/dto/update-user.dto.ts</code>
+            <code>src/cloudinary/cloudinary.controller.ts</code>
         </p>
 
-
-
             <p class="comment">
-                <h3>Extends</h3>
+                <h3>Prefix</h3>
             </p>
             <p class="comment">
-                        <code>OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const)</code>
+                <code>cloudinary</code>
             </p>
 
 
@@ -138,32 +127,150 @@
 
 
 
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#uploadImage" >uploadImage</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
 
 
 
 
 
+        </tbody>
+    </table>
+</section>
 
-    </div>
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="uploadImage"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>uploadImage</b></span>
+                        <a href="#uploadImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>uploadImage(file: <a href="../classes/File.html" target="_self">Express.Multer.File</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Post(&#x27;upload&#x27;)<br />@UseInterceptors(undefined)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="12"
+                                    class="link-to-prism">src/cloudinary/cloudinary.controller.ts:12</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>file</td>
+                                            <td>
+                                                            <code><a href="../classes/File.html" target="_self" >Express.Multer.File</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { OmitType } from &#x27;@nestjs/swagger&#x27;;
-import { CreateUserDto } from &#x27;./create-user.dto&#x27;;
-import { IsNotEmpty } from &#x27;class-validator&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Post, UseInterceptors, UploadedFile } from &#x27;@nestjs/common&#x27;;
+import { CloudinaryService } from &#x27;./cloudinary.service&#x27;;;
+import { FileInterceptor } from &#x27;@nestjs/platform-express&#x27;;
+import { fileUploadOptions } from &#x27;./cloudinary/file-upload.options&#x27;;
 
-export class UpdateUserDto extends OmitType(CreateUserDto, [
-  &#x27;password&#x27;,
-] as const) {
-  // @IsNotEmpty({ message: &#x27;Id không được để trống&#x27; })
-  // _id: string;
+@Controller(&#x27;cloudinary&#x27;)
+export class CloudinaryController {
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
+
+  @Post(&#x27;upload&#x27;)
+  @UseInterceptors(FileInterceptor(&#x27;fileUpload&#x27;, fileUploadOptions))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    const data &#x3D; await this.cloudinaryService.uploadFile(file);
+    return data.secure_url;
+  }
 }
-//- omit sẽ giúp chúng ta loại bỏ các trường không cần thiết trong DTO
-//- ở đây chúng ta loại bỏ trường password trong DTO UpdateUserDto
-//- chúng ta sẽ không cần nhập trường password khi update thông tin user
 </code></pre>
     </div>
 </div>
+
+
+
+
+
+
+
 
 
 
@@ -198,8 +305,8 @@ export class UpdateUserDto extends OmitType(CreateUserDto, [
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'UpdateUserDto.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'controller';
+            var COMPODOC_CURRENT_PAGE_URL = 'CloudinaryController.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 
